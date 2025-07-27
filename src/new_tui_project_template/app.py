@@ -1,4 +1,3 @@
-
 from rich.console import ConsoleRenderable, RichCast
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
@@ -23,6 +22,7 @@ class ParApp(App[None]):
         with Horizontal(id="main"):
             with Vertical():
                 yield self.logview
+
     def on_mount(self) -> None:
         """Called when the app is mounted."""
         self.logview.write(f"Welcome to {__application_title__} v{__version__}!")

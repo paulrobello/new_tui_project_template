@@ -5,7 +5,7 @@ run    := uv run
 python := $(run) python
 pyright := $(run) pyright
 ruff  := $(run) ruff
-twine  := $(run) twine
+publish := $(run) twine
 build  := uv build
 
 
@@ -23,7 +23,7 @@ app_help:		# Show app help
 
 .PHONY: dev
 dev:	        # Run in dev mode
-	$(run) textual run --dev -c $(lib)
+	$(run) textual run --dev src/$(lib)/__main__.py
 
 .PHONY: keys
 keys:	        # Run in keyboard input tester
@@ -105,13 +105,13 @@ typecheck-stats:			# Perform static type checks with pyright and print stats
 .PHONY: checkall
 checkall: format lint typecheck 	        # Check all the things
 
-.PHONY: pre-commit	        # run pre-commit checks on all files
-pre-commit:
-	pre-commit run --all-files
+.PHONY: pre-commit
+pre-commit:	        # run pre-commit checks on all files
+	$(run) pre-commit run --all-files
 
-.PHONY: pre-commit-update	        # run pre-commit and update hooks
-pre-commit-update:
-	pre-commit autoupdate
+.PHONY: pre-commit-update
+pre-commit-update:	        # run pre-commit and update hooks
+	$(run) pre-commit autoupdate
 
 ##############################################################################
 # Package/publish.

@@ -12,6 +12,7 @@ from rich.console import Console
 from new_tui_project_template.app import ParApp
 
 from . import __application_binary__, __application_title__, __version__
+from .config import load_config
 from .logging_config import get_logger, setup_logging
 
 # Create the main Typer app with rich help
@@ -42,10 +43,21 @@ def launch_tui(
         bool,
         typer.Option("--debug", help="Enable debug mode"),
     ] = False,
+    config_file: Annotated[
+        str | None,
+        typer.Option("--config", help="Path to config file"),
+    ] = None,
 ) -> None:
     """Start TUI"""
     try:
-        setup_logging(debug=debug)
+        # Load configuration
+        config = load_config(config_file)
+
+        # Override debug setting if provided via CLI
+        if debug:
+            config["debug"] = debug
+
+        setup_logging(debug=config.get("debug", False))
         console.print("[bold blue]Starting TUI[/bold blue]")
         ParApp().run()
 

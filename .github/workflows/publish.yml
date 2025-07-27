@@ -1,36 +1,43 @@
-name: Release 🐍 distribution
+name: Publish 🐍 📦 to PyPI
 
 on:
   workflow_dispatch:
+  release:
+    types: [ published ]
 
 jobs:
-  github-release:
-    name: Create GitHub Release
+  publish-to-pypi:
+    if: github.event_name == 'workflow_dispatch'  # Only allow manual triggers
+    name: Publish 🐍 distribution 📦 to PyPI
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/new_tui_project_template
     permissions:
-      contents: write
-      id-token: write
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
-
       - name: Install dependencies
         run: |
-          uv sync
+          uv sync --all-extras --dev
 
       - name: Get version from __init__.py
         id: get_version
         run: |
-          version=$(uv run python -c "from src.new_project_template import __version__; print(__version__)")
+          version=$(uv run python -c "from src.new_tui_project_template import __version__; print(__version__)")
           echo "Raw version output: $version"
           echo "VERSION=$version" >> $GITHUB_ENV
 
@@ -51,35 +58,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-3.11-x64-${{ hashFiles('**/pyproject.toml') }}-
             ${{ runner.os }}-3.11-x64-
+          fail-on-cache-miss: true
 
-      - name: Sign the dists with Sigstore
-        uses: sigstore/gh-action-sigstore-python@v3.0.0
-        with:
-          inputs: >-
-            ./dist/*.tar.gz
-            ./dist/*.whl
-
-      - name: Create GitHub Release
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          gh release create \
-          'release-v${{ env.VERSION }}' \
-          --repo '${{ github.repository }}' \
-          --generate-notes \
-          --latest
-
-      - name: Upload artifact signatures to GitHub Release
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          gh release upload \
-          'release-v${{ env.VERSION }}' dist/** \
-          --repo '${{ github.repository }}'
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
 
       - name: Discord notification
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: 'A new release ${{ github.ref_name }} has been created for {{ EVENT_PAYLOAD.repository.full_name }}.'
+          args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} ${{ env.VERSION }} has been published to PyPI.'
+        continue-on-error: true

@@ -11,7 +11,7 @@ This is a comprehensive Python project template built with modern tooling that p
 ### Core Development Workflow
 - `make checkall` - Format code, run linter, and type check (run after any code changes)
 - `uv run new_tui_project_template --help` - Show all available commands
-- `uv run new_tui_project_template tui` - Launch the TUI application
+- `uv run new_tui_project_template` - Launch the TUI application
 
 ### Package Management
 - `uv sync` - Sync dependencies (equivalent to pip install)
@@ -40,21 +40,21 @@ This is a comprehensive Python project template built with modern tooling that p
 ## Project Architecture
 
 ### Core Structure
-- **src/new_project_template/**: Main package directory
+- **src/new_tui_project_template/**: Main package directory
   - `__init__.py`: Package metadata, version, and application constants
-  - `__main__.py`: Multi-command CLI application with TUI integration
-  - `tui/`: TUI application components
-    - `app.py`: Main Textual application class
-    - `screens/`: Screen definitions and layouts
-    - `widgets/`: Custom widget implementations
-    - `styles.tcss`: Textual CSS styling definitions
+  - `__main__.py`: CLI application with TUI integration using Typer
+  - `app.py`: Main Textual application class (ParApp)
+  - `app.tcss`: Textual CSS styling definitions
+  - `config.py`: YAML configuration loading and management
   - `logging_config.py`: Logging setup with Rich integration
-- **Entry point**: `new_project_template.__main__:app` (Typer CLI with TUI commands)
+- **Entry point**: `new_tui_project_template.__main__:app` (Typer CLI with TUI commands)
+- **Configuration files**: `config.yaml` and `config.yaml.example`
 
 ### Key Dependencies
 - `typer` - CLI framework with rich annotations
 - `textual` - Primary TUI framework for building terminal applications
 - `rich` - Terminal output formatting and components
+- `PyYAML` - YAML configuration file parsing
 - `python-dotenv` - Environment variable loading
 
 ### TUI Development Patterns
@@ -91,7 +91,7 @@ class MyTUIApp(App):
 
 ### Textual CSS Styling
 
-#### CSS File Structure (`styles.tcss`)
+#### CSS File Structure (`app.tcss`)
 ```css
 /* Screen-level styles */
 Screen {
@@ -120,7 +120,8 @@ Button:hover {
 - **ruff**: Line length 120, Google-style docstrings, modern Python (3.11+)
 - **pyright**: Basic type checking mode, Python 3.12 target
 - **Environment**: Loads from `.env` and `~/.new_project_template.env`
-- **Textual**: Configure via `textual.toml` for development settings
+- **Configuration**: Uses YAML format for settings persistence (config.yaml)
+- **Textual**: Development tools and console available
 
 ### Development Standards
 - Python 3.11+ required
@@ -159,9 +160,30 @@ Button:hover {
 - Provide clear error messages in modal dialogs
 - Log errors without disrupting the TUI experience
 
+### Configuration Management
+
+#### YAML Configuration
+- **File locations**: `config.yaml`, `~/.new_tui_project_template.yaml`, `config.yaml.example`
+- **Loading**: Automatic search order with fallback to example file
+- **Format**: YAML with support for nested configuration
+- **CLI override**: `--config` option to specify custom config file
+- **Debug mode**: Configurable via YAML or `--debug` CLI flag
+
+#### Configuration Module (`config.py`)
+```python
+from .config import load_config, save_config
+
+# Load configuration
+config = load_config()  # Searches standard locations
+config = load_config("/path/to/config.yaml")  # Specific file
+
+# Save configuration
+save_config(config_dict, "config.yaml")
+```
+
 ### Template Customization Points
-- Add custom TUI screens in `tui/screens/`
-- Create reusable widgets in `tui/widgets/`
-- Extend CSS styling in `styles.tcss`
-- Add CLI commands that launch TUI interfaces in `__main__.py`
-- Configure key bindings and color schemes
+- Extend TUI application in `app.py` (ParApp class)
+- Add custom styling in `app.tcss`
+- Enhance configuration handling in `config.py`
+- Add CLI commands in `__main__.py`
+- Configure application settings in `config.yaml`

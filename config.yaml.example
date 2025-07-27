@@ -1,0 +1,27 @@
+# Example configuration file for new_tui_project_template
+# Copy this to config.yaml and adjust as needed
+
+# Application Settings
+debug: false              # Enable debug mode and verbose logging
+log_level: "INFO"         # Logging level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+
+# TUI Application Settings  
+theme: "dark"             # Application theme: "dark", "light"
+title: "My TUI App"       # Window title
+refresh_rate: 60          # Screen refresh rate in Hz
+
+# Development Settings
+auto_reload: false        # Auto-reload CSS and Python files during development
+show_fps: false          # Show FPS counter in development mode
+
+# Advanced Settings
+max_log_files: 5          # Maximum number of log files to keep
+log_file_size: "10MB"     # Maximum size per log file
+
+# Custom Application Settings
+# TODO: Add your specific configuration options here
+# Examples:
+# database_url: "sqlite:///app.db"
+# api_key: "your-api-key-here"
+# timeout: 30
+# cache_size: 1000

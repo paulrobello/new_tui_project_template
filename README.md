@@ -9,7 +9,7 @@ A comprehensive Python project template for building modern Terminal User Interf
 
 - **Multi-Command CLI**: Interactive TUI applications with comprehensive command interface
 - **Textual Framework**: Build beautiful, responsive terminal user interfaces
-- **Configuration Management**: TOML files with layered configuration system
+- **Configuration Management**: YAML files with layered configuration system
 - **Rich Terminal UI**: Beautiful output with Rich library integration
 - **Type Safety**: Full type annotations throughout
 - **Modern Python**: Built with uv, ruff, pyright, and Python 3.11+
@@ -19,6 +19,7 @@ A comprehensive Python project template for building modern Terminal User Interf
 - **Typer** - Modern CLI framework with Rich integration
 - **Rich** - Beautiful terminal output and formatting
 - **Textual** - Build beautiful, responsive TUI applications
+- **PyYAML** - YAML configuration file support
 - **uv** - Fast Python package management
 - **Asyncio** - Asynchronous programming for responsive interfaces
 
@@ -75,30 +76,69 @@ uv run new_tui_project_template --help
 ### 2. Setup Configuration
 
 ```shell
-# Create example configuration file
-uv run new_tui_project_template config --create
+# Copy example configuration file
+cp config.yaml.example config.yaml
 
-# Copy example environment file
-cp .env.example .env
-
-# Edit .env with your application settings
-# Configure logging, themes, and other TUI preferences
+# Edit config.yaml with your application settings
+# Configure debug mode, themes, and other TUI preferences
 ```
 
 ### 3. Basic Usage
 
 ```shell
 # Start the TUI application
-uv run new_tui_project_template tui
+uv run new_tui_project_template
 
-# Run CLI mode
-uv run new_tui_project_template cli
+# Start with debug mode enabled
+uv run new_tui_project_template --debug
+
+# Use custom configuration file
+uv run new_tui_project_template --config /path/to/config.yaml
 
 # View all available commands
 uv run new_tui_project_template --help
 ```
 
-## Commands
+## Configuration
+
+The application uses YAML configuration files for settings management:
+
+### Configuration File Locations
+
+The application searches for configuration files in this order:
+1. `config.yaml` (current directory)
+2. `~/.new_tui_project_template.yaml` (user home directory)
+3. `config.yaml.example` (fallback)
+
+### Configuration Options
+
+```yaml
+# Debug mode - enables verbose logging
+debug: false
+
+# TODO: Add your custom configuration options here
+# Examples:
+# theme: "dark"
+# refresh_rate: 60
+# log_level: "INFO"
+# window_title: "My TUI App"
+```
+
+### Command Line Options
+
+```shell
+# Override debug setting
+--debug
+
+# Specify custom config file
+--config /path/to/config.yaml
+
+# Show version
+--version
+
+# Show help
+--help
+```
 
 ## Development
 
@@ -134,7 +174,7 @@ make typecheck   # Type check with pyright
 uv sync -U
 
 # Build package
-uv build
+make package
 ```
 
 ### Adding Custom Commands
@@ -151,7 +191,7 @@ Look for `# TODO` comments for specific extension points.
 ### Version 0.1.0
 - **Initial Release**: TUI application template with Textual framework
 - **Multi-Command Interface**: CLI and TUI modes
-- **Configuration System**: TOML-based configuration management
+- **Configuration System**: YAML-based configuration management
 - **Rich Integration**: Beautiful terminal output and theming
 
 ## Template Customization
@@ -161,9 +201,10 @@ When creating a new project from this template, you'll want to customize it for 
 ### Key Customization Points
 
 1. **Commands** (`__main__.py`): Add your own CLI and TUI commands
-2. **TUI Widgets** (`tui/`): Create custom Textual widgets and screens
-3. **Dependencies** (`pyproject.toml`): Add project-specific packages
-4. **Themes** (`config/`): Customize TUI appearance and styling
+2. **TUI Application** (`app.py`): Customize the main Textual application
+3. **Configuration** (`config.py`): Extend YAML configuration handling
+4. **Dependencies** (`pyproject.toml`): Add project-specific packages
+5. **Styling** (`app.tcss`): Customize TUI appearance with CSS
 
 ### Files Automatically Updated
 
@@ -171,10 +212,10 @@ When using bootstrap_project, these files are automatically updated with your pr
 - `pyproject.toml` - Project metadata and dependencies
 - `README.md` - Documentation
 - `CLAUDE.md` - Development instructions
-- `src/new_project_template/*.py` - All Python source files
-- `.env` - Environment configuration
+- `src/new_tui_project_template/*.py` - All Python source files
+- `config.yaml` - YAML configuration
 - `Makefile` - Build commands
-- `.github-disabled/workflows/*.yml` - CI/CD workflows
+- `.github/workflows/*.yml` - CI/CD workflows
 
 ## Contributing
 
