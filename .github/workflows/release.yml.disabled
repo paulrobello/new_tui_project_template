@@ -2,11 +2,19 @@ name: Release 🐍 distribution
 
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Publish 🐍 📦 to PyPI"]
+    types:
+      - completed
+    branches:
+      - main
 
 jobs:
   github-release:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     name: Create GitHub Release
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: write
       id-token: write
@@ -15,19 +23,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
-        with:
-          enable-cache: true
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
 
       - name: Install dependencies
         run: |
-          uv sync --all-extras --dev
+          uv sync --all-groups
 
       - name: Get version from __init__.py
         id: get_version
@@ -46,13 +52,18 @@ jobs:
           fi
 
       - name: Restore cached build artifacts
+        id: cache
         uses: actions/cache@v4
         with:
           path: dist
-          key: ${{ runner.os }}-3.11-x64-${{ hashFiles('**/pyproject.toml') }}-${{ github.sha }}
+          key: ${{ runner.os }}-3.12-x64-${{ hashFiles('**/pyproject.toml') }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-3.11-x64-${{ hashFiles('**/pyproject.toml') }}-
-            ${{ runner.os }}-3.11-x64-
+            ${{ runner.os }}-3.12-x64-${{ hashFiles('**/pyproject.toml') }}-
+            ${{ runner.os }}-3.12-x64-
+
+      - name: Build if artifacts not cached
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: make package-all
 
       - name: Sign the dists with Sigstore
         uses: sigstore/gh-action-sigstore-python@v3.0.0
@@ -85,3 +96,11 @@ jobs:
         uses: Ilshidur/action-discord@master
         with:
           args: 'A new release ${{ github.ref_name }} has been created for {{ EVENT_PAYLOAD.repository.full_name }}.'
+
+      - name: Cleanup on failure
+        if: failure()
+        run: |
+          gh release delete 'release-v${{ env.VERSION }}' --yes || true
+          rm -rf dist/ || true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

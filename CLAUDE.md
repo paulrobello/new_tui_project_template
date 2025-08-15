@@ -4,14 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a comprehensive Python project template built with modern tooling that provides a robust foundation for Terminal User Interface (TUI) applications using the Textual framework.
+This is a comprehensive Python project template built with modern tooling that provides a robust foundation for Terminal User Interface (TUI) applications using the Textual framework. Designed to be used with [bootstrap_project](https://github.com/paulrobello/bootstrap_project) for quickly creating new Python TUI projects.
 
 ## Development Commands
 
 ### Core Development Workflow
 - `make checkall` - Format code, run linter, and type check (run after any code changes)
-- `uv run new_tui_project_template --help` - Show all available commands
 - `uv run new_tui_project_template` - Launch the TUI application
+- `uv run new_tui_project_template --help` - Show all available commands
+- `uv run new_tui_project_template --debug` - Run with debug mode enabled
+- `make dev` - Run TUI in development mode with Textual dev features
 
 ### Package Management
 - `uv sync` - Sync dependencies (equivalent to pip install)
@@ -20,12 +22,12 @@ This is a comprehensive Python project template built with modern tooling that p
 - `make depsupdate` - Update all dependencies
 - `make setup` - Initial setup (uv lock + sync)
 
-### Individual Tools
+### Code Quality Tools
 - `make format` - Format code with ruff
 - `make lint` - Run ruff linter with fixes
 - `make typecheck` - Run pyright type checker
-- `uv run pyright` - Type checking
 - `uv run ruff check src/new_tui_project_template --fix` - Lint with fixes
+- `uv run pyright` - Direct type checking
 
 ### Testing and Quality
 - `make profile` - Profile with scalene
@@ -33,9 +35,12 @@ This is a comprehensive Python project template built with modern tooling that p
 - `make pre-commit` - Run pre-commit hooks
 
 ### TUI Development Tools
-- `textual console` - Open Textual development console for debugging
-- `textual run --dev src/new_tui_project_template/__main__.py` - Run TUI with development features
-- `textual keys` - Show available key bindings reference
+- `make dev` - Run TUI in development mode with hot reload
+- `make console` - Open Textual development console for debugging
+- `make keys` - Show Textual keyboard input tester
+- `make borders` - Display Textual border styles reference
+- `make colors` - Display Textual color palette
+- `uv run textual run --dev src/new_tui_project_template/__main__.py` - Direct Textual dev mode
 
 ## Project Architecture
 
@@ -117,22 +122,24 @@ Button:hover {
 - **Dark Mode**: Leverage Textual's automatic dark mode support
 
 ### Configuration
-- **ruff**: Line length 120, Google-style docstrings, modern Python (3.11+)
+- **Python Version**: Target 3.12, supports 3.11-3.13
+- **ruff**: Line length 120, Google-style docstrings, target Python 3.12
 - **pyright**: Basic type checking mode, Python 3.12 target
-- **Environment**: Loads from `.env` and `~/.new_project_template.env`
+- **Environment**: Loads from `.env` and `~/.new_tui_project_template.env`
 - **Configuration**: Uses YAML format for settings persistence (config.yaml)
 - **Textual**: Development tools and console available
 
 ### Development Standards
-- Python 3.11+ required
+- Python 3.11-3.13 supported (3.12 target)
 - Type annotations mandatory for all TUI components
 - Google-style docstrings for widgets and screens
-- Uses `uv` for package management
+- Uses `uv` for package management (NOT pip, poetry, conda, or pipenv)
 - Follows src/ layout pattern
 - UTF-8 encoding for all file operations
 - Comprehensive error handling with user-friendly TUI dialogs
 - Logging with Rich integration (compatible with Textual)
 - Modular architecture with separation of concerns
+- Run `make checkall` after any code changes
 
 ### TUI Best Practices
 
@@ -181,9 +188,19 @@ config = load_config("/path/to/config.yaml")  # Specific file
 save_config(config_dict, "config.yaml")
 ```
 
-### Template Customization Points
-- Extend TUI application in `app.py` (ParApp class)
-- Add custom styling in `app.tcss`
-- Enhance configuration handling in `config.py`
-- Add CLI commands in `__main__.py`
-- Configure application settings in `config.yaml`
+### Key Integration Points
+
+#### Adding New Features
+1. **TUI Components**: Extend `ParApp` class in `app.py`
+2. **CLI Commands**: Add new Typer commands in `__main__.py`
+3. **Styling**: Modify `app.tcss` for custom widget styles
+4. **Configuration**: Update `config.py` and `config.yaml.example`
+5. **Logging**: Use `get_logger(__name__)` for module-specific logging
+
+#### Project Bootstrap
+When creating a new project from this template:
+```bash
+uv tool install bootstrap_project
+bsp --project-name my_tui_app
+```
+This automatically replaces all `new_tui_project_template` references with your project name.

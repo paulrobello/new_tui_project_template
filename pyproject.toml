@@ -36,10 +36,10 @@ keywords = [
 ]
 dependencies = [
     "python-dotenv>=1.1.1",
-    "rich>=14.0.0",
+    "rich>=14.1.0",
     "typer>=0.16.0",
-    "PyYAML>=6.0.0",
-    "textual[syntax]>=3.5.0",
+    "PyYAML>=6.0.2",
+    "textual[syntax]>=5.3.0",
 ]
 packages = [
     "src/new_tui_project_template",
@@ -68,14 +68,14 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "build>=1.2.2",
-    "pyright>=1.1.396",
-    "pre-commit>=4.1.0",
-    "ruff>=0.11.0",
-    "pyinstrument>=5.0.1",
-    "types-PyYAML>=6.0.0",
-    "twine>=5.0.0",
-    "scalene>=1.5.51",
+    "build>=1.3.0",
+    "pyright>=1.1.403",
+    "pre-commit>=4.3.0",
+    "ruff>=0.12.9",
+    "pyinstrument>=5.1.1",
+    "types-PyYAML>=6.0.12.20250809",
+    "twine>=6.1.0",
+    "scalene>=1.5.53",
     "hatchling>=1.27.0",
 ]
 
