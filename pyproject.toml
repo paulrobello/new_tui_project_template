@@ -35,11 +35,11 @@ keywords = [
     "terminal",
 ]
 dependencies = [
-    "python-dotenv>=1.1.1",
-    "rich>=14.1.0",
-    "typer>=0.16.0",
-    "PyYAML>=6.0.2",
-    "textual[syntax]>=5.3.0",
+    "python-dotenv>=1.2.2",
+    "rich>=15.0.0",
+    "typer>=0.24.1",
+    "PyYAML>=6.0.3",
+    "textual[syntax]>=8.2.3",
 ]
 packages = [
     "src/new_tui_project_template",
