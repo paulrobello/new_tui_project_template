@@ -39,6 +39,10 @@ def version_callback(value: bool) -> None:
 
 @app.command()
 def launch_tui(
+    version: Annotated[
+        bool,
+        typer.Option("--version", callback=version_callback, is_eager=True, help="Show version and exit"),
+    ] = False,
     debug: Annotated[
         bool,
         typer.Option("--debug", help="Enable debug mode"),
