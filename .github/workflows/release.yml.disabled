@@ -21,15 +21,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@v8.3.2
 
       - name: Install dependencies
         run: |
@@ -53,7 +53,7 @@ jobs:
 
       - name: Restore cached build artifacts
         id: cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: dist
           key: ${{ runner.os }}-3.12-x64-${{ hashFiles('**/pyproject.toml') }}-${{ github.sha }}
@@ -66,7 +66,7 @@ jobs:
         run: make package-all
 
       - name: Sign the dists with Sigstore
-        uses: sigstore/gh-action-sigstore-python@v3.0.0
+        uses: sigstore/gh-action-sigstore-python@v3.4.0
         with:
           inputs: >-
             ./dist/*.tar.gz
