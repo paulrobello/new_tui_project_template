@@ -22,33 +22,27 @@ repos:
 
   - repo: local
     hooks:
-      - id: format
-        name: format
-        entry: make
+      - id: typecheck
+        name: typecheck
+        entry: make typecheck
         language: system
         pass_filenames: false
-        args:
-          [format]
+        exclude: tests(/\w*)*/functional/|tests/input|tests(/\w*)*data/|doc/|output/.*
+
+  - repo: local
+    hooks:
+      - id: format
+        name: format
+        entry: make format
+        language: system
+        pass_filenames: false
         exclude: tests(/\w*)*/functional/|tests/input|tests(/\w*)*data/|doc/|output/.*
 
   - repo: local
     hooks:
       - id: lint
         name: lint
-        entry: make
+        entry: make lint
         language: system
         pass_filenames: false
-        args:
-          [lint]
-        exclude: tests(/\w*)*/functional/|tests/input|tests(/\w*)*data/|doc/|output/.*
-
-  - repo: local
-    hooks:
-      - id: pyright
-        name: pyright
-        entry: make
-        language: system
-        pass_filenames: false
-        args:
-          [typecheck]
         exclude: tests(/\w*)*/functional/|tests/input|tests(/\w*)*data/|doc/|output/.*

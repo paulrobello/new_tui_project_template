@@ -4,6 +4,6 @@
 debug: false              # Enable debug mode and verbose logging
 log_level: "INFO"         # Logging level: DEBUG, INFO, WARNING, ERROR, CRITICAL
 
-# TUI Application Settings  
+# TUI Application Settings
 theme: "dark"             # Application theme: "dark", "light"
 title: "TUI Template"     # Window title

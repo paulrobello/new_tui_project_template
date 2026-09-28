@@ -71,12 +71,12 @@ from textual.widgets import Header, Footer
 
 class MyTUIApp(App):
     """Main TUI application class."""
-    
+
     BINDINGS = [
         ("d", "toggle_dark", "Toggle dark mode"),
         ("q", "quit", "Quit"),
     ]
-    
+
     def compose(self):
         yield Header()
         yield YourMainWidget()

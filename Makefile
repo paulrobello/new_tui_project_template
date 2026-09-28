@@ -5,7 +5,7 @@ run    := uv run
 python := $(run) python
 pyright := $(run) pyright
 ruff  := $(run) ruff
-publish := $(run) twine
+twine  := $(run) twine
 build  := $(python) -m build
 
 
@@ -82,9 +82,12 @@ shell:			# Start shell inside of .venv
 ##############################################################################
 # Checking/testing/linting/etc.
 
-.PHONY: format
-format:                         # Reformat the code with ruff.
+.PHONY: fmt
+fmt:                            # Reformat the code with ruff.
 	$(ruff) format src/$(lib)
+
+.PHONY: format
+format: fmt                     # Alias for fmt.
 
 .PHONY: lint
 lint:                           # Run ruff lint over the library
@@ -115,6 +118,9 @@ pre-commit-update:	        # run pre-commit and update hooks
 
 ##############################################################################
 # Package/publish.
+.PHONY: build
+build: package spackage		# Build wheel and source distributions
+
 .PHONY: package
 package:			# Package the library (wheel only)
 	$(build) -w
@@ -129,11 +135,11 @@ package-all: clean		# Package both wheel and source
 
 .PHONY: test-publish
 test-publish: package		# Upload to testpypi
-	$(publish) upload --index testpypi --check-url
+	$(twine) upload --repository testpypi --check-url
 
 .PHONY: publish
 publish: package		# Upload to pypi
-	$(publish) upload --check-url
+	$(twine) upload --check-url
 
 ##############################################################################
 # Utility.
